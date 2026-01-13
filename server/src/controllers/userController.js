@@ -13,11 +13,16 @@ const registerUser = async (req, res) => {
         if (user) {
             return res.status(400).json({ success: false, message: "Account already exists" })
         }
+
+        const adminExists = await User.exists({ role: 'admin' });
+
+        const role = adminExists ? 'user' : 'admin';
+        const isAdmin = role === 'admin' ? true : false;
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
         const newUser = await User.create({
-            name, email, password: hashedPassword
+            name, email, password: hashedPassword, role, isAdmin
         });
 
         const token = generateToken(newUser._id);
@@ -28,6 +33,7 @@ const registerUser = async (req, res) => {
             name: newUser.name,
             email: newUser.email,
             role: newUser.role,
+            isAdmin: newUser.isAdmin,
         };
 
         res.status(201).json({ success: true, userData: userResponse, token, message: "Account created successfully" })
@@ -60,6 +66,7 @@ const login = async (req, res) => {
             name: userData.name,
             email: userData.email,
             role: userData.role,
+            isAdmin: userData.isAdmin,
         };
 
         res.status(200).json({ success: true, userData: userResponse, token, message: "Login successful" })
