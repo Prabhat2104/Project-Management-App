@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         lowercase: true,
         unique: true,
+        required: true,
     },
     password: {
         type: String,
@@ -26,7 +27,19 @@ const userSchema = new mongoose.Schema({
     isDeleted: {
         type: Boolean,
         default: false
-    }
+    },
+    tasks: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Task"
+        }
+    ],
+    projects: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Project"
+        }
+    ]
 }, {timestamps: true})
 
 const User = mongoose.model("User", userSchema);

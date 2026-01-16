@@ -2,6 +2,8 @@ import express from "express";
 import 'dotenv/config';
 import connectdb from "./src/config/connectDB.js";
 import userRouter from "./src/routes/authRoutes.js";
+import projectRouter from "./src/routes/projectRoutes.js";
+import taskRouter from "./src/routes/taskRoutes.js";
 
 const app = express();
 app.use(express.json());
@@ -16,6 +18,9 @@ app.get('/api/status', (req, res) => {
 });
 
 app.use('/api/auth', userRouter);
+app.use('/api/project', projectRouter);
+app.use('/api/task', taskRouter);
+
 
 
 app.listen(PORT, () => {

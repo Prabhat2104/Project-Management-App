@@ -11,13 +11,13 @@ const projectSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["Not Started", "In Progress", "Completed"],
-        default: "Not Started"
+        enum: ["assigned", "inprogress", "completed"],
+        default: "assigned"
     },
     priority: {
         type: String,
-        enum: ["Low", "Medium", "High"],
-        default: "Low"
+        enum: ["low", "medium", "high"],
+        default: "low"
     },
     createdAt: {
         type: Date,
@@ -33,6 +33,21 @@ const projectSchema = new mongoose.Schema({
             ref: "Task"
         }
     ],
+    members: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }
+    ],
+    admin: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    },
+    projectId: {
+        type: Number,
+        required: true,
+        unique: true
+    }
 }, {timestamps: true})
 
 const Project = mongoose.model("Project", projectSchema);

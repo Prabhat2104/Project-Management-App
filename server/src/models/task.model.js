@@ -11,13 +11,17 @@ const taskSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["Not Started", "In Progress", "Completed"],
-        default: "Not Started"
+        enum: ["notstarted", "inprogress", "completed"],
+        default: "notstarted"
     },
     priority: {
         type: String,
-        enum: ["Low", "Medium", "High"],
-        default: "Low"
+        enum: ["low", "medium", "high"],
+        default: "low"
+    },
+    assignedTo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
     },
     createdAt: {
         type: Date,
@@ -36,7 +40,11 @@ const taskSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "Comment"
         }
-    ]
+    ],
+    isCompleted: {
+        type: Boolean,
+        default: false
+    }
 }, {timestamps: true})
 
 const Task = mongoose.model("Task", taskSchema);
