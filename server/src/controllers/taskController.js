@@ -80,7 +80,7 @@ const getAllTaskForProject = async (req, res) => {
         if (!tasks) {
             return res.status(404).json({ success: false, message: "Tasks not found" });
         }
-        res.status(200).json({ success: true, tasks })
+        res.status(200).json({ success: true, tasks, message: "Tasks fetched successfully" })
     }
     catch (error) {
         console.log(error.message);
