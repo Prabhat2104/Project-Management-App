@@ -20,7 +20,7 @@ const sendMail = async (to, subject, text) => {
     //console.log(mailOptions);
     const info = await transporter.sendMail(mailOptions);
     //console.log(info);
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    //console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 }
 
 
