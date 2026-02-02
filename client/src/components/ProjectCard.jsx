@@ -55,7 +55,7 @@ const ProjectCard = ({ project, onClick }) => {
           </span>
         </div>
         {isAdmin&&(<>
-        <button onClick={() => setShowEditForm(true)} className="bg-blue-500 text-white px-2 py-1 rounded-lg ml-2 h-10 w-16 hover:bg-blue-600 transition-colors cursor-pointer z-10">Edit</button>
+        <button onClick={() => setShowEditForm(true)} className="bg-blue-500 text-white px-2 py-1 rounded-lg ml-2 h-10 w-16 hover:bg-blue-600 transition-colors cursor-pointer">Edit</button>
         {showEditForm && <ProjectEditForm onClose={() => setShowEditForm(false)} project={project}/>}
         <button className="text-white bg-red-500 px-2 py-1 rounded-lg ml-2 h-10 w-16 hover:bg-red-600 cursor-pointer" onClick={deleteClick}>Delete</button>
         </>)}

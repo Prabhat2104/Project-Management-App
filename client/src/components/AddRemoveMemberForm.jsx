@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { X } from 'lucide-react';
 import { useContext } from 'react';
@@ -21,6 +21,10 @@ const AddRemoveMemberForm = ({ onClose, project, state }) => {
     }
       onClose();
   };
+
+  // useEffect(()=>{
+  //   console.log(state);
+  // },[])
 
   return (
     <div className="fixed inset-0 z-50">

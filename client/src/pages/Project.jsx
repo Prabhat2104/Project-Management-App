@@ -27,6 +27,8 @@ const Project = () => {
 
     const {projects, fetchAllProjects, fetchProjectOfUser, createProject} = useContext(ProjectContext);
     useEffect(()=>{
+      // if(!authUser.token)
+      //   return;
         if(isAdmin){
           fetchAllProjects();
         }else{

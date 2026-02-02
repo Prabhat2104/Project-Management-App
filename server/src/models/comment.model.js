@@ -10,8 +10,8 @@ const commentSchema = new mongoose.Schema({
         ref: "Task"
     },
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+        type: String,
+        required: true
     }
 }, {timestamps: true})
 

@@ -1,4 +1,4 @@
-import axios from "axios";
+//import axios from "axios";
 import {createContext, useEffect, useState} from "react";
 import toast from "react-hot-toast";
 import { useContext } from "react";
@@ -9,13 +9,14 @@ export const ProjectContext = createContext(null);
 export const ProjectProvider = ({children}) => {
     const [projects, setProjects] = useState([]);
     const {authUser} = useContext(AuthContext);
+    const {axios} = useContext(AuthContext);
     const fetchAllProjects = async() => {
         try {
             console.log("Fetching all project for admin");
             const {data} = await axios.get("/api/project/getAll");
             if(data.success){
                 setProjects(data.projects);
-                toast.success(data.message);
+                // toast.success(data.message);
                 return true;
             }
             else{
@@ -35,7 +36,7 @@ export const ProjectProvider = ({children}) => {
             const {data} = await axios.get("/api/project/get");
             if(data.success){
                 setProjects(data.projects);
-                toast.success(data.message);
+                // toast.success(data.message);
                 return true;
             }
             else{
@@ -105,7 +106,8 @@ export const ProjectProvider = ({children}) => {
             if (data.success){
                 toast.success(data.message);
                 return true;
-            } else{
+            } 
+            else{
                 toast.error(error.message);
                 return false;
             }
@@ -122,10 +124,11 @@ export const ProjectProvider = ({children}) => {
             if (data.success){
                 toast.success(data.message);
                 return true;
-            } else{
-                toast.error(error.message);
-                return false;
-            }
+            } 
+            // else{
+            //     toast.error(error.message);
+            //     return false;
+            // }
             
         } catch (error) {
             toast.error(error.message);

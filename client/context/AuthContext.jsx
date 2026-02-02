@@ -7,6 +7,19 @@ import toast from 'react-hot-toast';
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 axios.defaults.baseURL = backendUrl;
 
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({children})=>{
@@ -18,7 +31,7 @@ export const AuthProvider = ({children})=>{
 
     const register = async(credentials) => {
         try {
-            console.log("AuthContext register called with:", {  credentials });
+            //console.log("AuthContext register called with:", {  credentials });
             const {data} = await axios.post(`/api/auth/register`,credentials);
             if(data.success){
                 //setAuthUser(data.userData);
@@ -73,7 +86,7 @@ export const AuthProvider = ({children})=>{
 
  const login = async (credentials) => {
   try {
-    console.log("Sending login payload:", credentials);
+    //console.log("Sending login payload:", credentials);
 
     const { data } = await axios.post(
       "/api/auth/login",
@@ -117,7 +130,7 @@ export const AuthProvider = ({children})=>{
     const logout = async ()=>{
         localStorage.removeItem("token");
         setToken(null);
-        console.log(authUser)
+        // console.log(authUser)
         setAuthUser(null);
         localStorage.removeItem("user");
         setIsAdmin(false);
@@ -132,7 +145,7 @@ export const AuthProvider = ({children})=>{
         try {
             const {data}  = await axios.put("/api/auth/update",body);
             if(data.success){
-                setAuthUser(data.user);
+                setAuthUser(data.userData);
                 toast.success("Profile updated Successfully");
             }
             

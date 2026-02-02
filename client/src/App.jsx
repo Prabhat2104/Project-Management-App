@@ -19,7 +19,7 @@ const App = () => {
       <Route path = '/' element  = {authUser? <Home/> : <Login/> }/>
       <Route path = '/project' element  = {authUser? <Project /> : <Login/> }/>
       <Route path = '/task/:id' element  = {authUser? <Task/> : <Login/> }/>
-      <Route path = '/profile' element  = {authUser? <Profile/> : <Login/> }/>
+      {/* <Route path = '/profile' element  = {authUser? <Profile/> : <Login/> }/> */}
       <Route path = '/login' element  = {authUser? <Home/> : <Login/>}/>
       <Route path = '/register' element  = {authUser? <Home/> : <Register/>}/>
       </Routes>

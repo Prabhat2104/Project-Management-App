@@ -7,17 +7,28 @@ import { TaskContext } from '../../context/TaskContext';
 import { AuthContext } from '../../context/AuthContext';
 import { ProjectContext } from '../../context/ProjectContext';
 import AddRemoveMemberForm from '../components/AddRemoveMemberForm';
+import CreateTaskForm from '../components/CreateTaskForm';
+import { SquarePen } from 'lucide-react';
+import { Trash } from 'lucide-react';
+import EditTaskForm from '../components/EditTaskForm';
+import CommentModal from '../components/CommentModal';
+
 
 
 
 const Task = () => {
   const {projects, addMember} = useContext(ProjectContext);
   const [showMemberForm, setShowMemberForm] = useState(false);
+  const[showCreateTask, setShowCreateTask] = useState(false);
+  const [state, setState] = useState("");
+  const [taskId, setTaskId] = useState("");
+  const[showEditTask, setShowEditTask] = useState(false);
+  const[showComments, setShowComments] = useState(false);
   const {id} = useParams();
   const project = projects.find((p)=>p._id===id);
   // console.log(project);
   const {isAdmin, authUser} = useContext(AuthContext);
-  const {tasks, fetchAllTasksOfProject, fetchTaskOfUser} = useContext(TaskContext);
+  const {tasks, fetchAllTasksOfProject, fetchTaskOfUser, removeTask} = useContext(TaskContext);
   // const getUserName = (id) =>
   //   users.find(u => u._id === id)?.name || "Unassigned";
   useEffect(()=>{
@@ -42,33 +53,50 @@ const priorityColors = {
 
   return (
     <div>
-        
         <Navbar/>
         <div className="p-6 max-w-7xl mx-auto">
           <div className='flex justify-between'>
             <h1 className='text-3xl'>{project.title}</h1>
             {isAdmin&&<>
-            <button className='mr-1 border px-2 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 cursor-pointer' onClick={() => setShowMemberForm(true)}> + Add member</button>
-            {showMemberForm&&<AddRemoveMemberForm onClose={() => setShowMemberForm(false)} project={project} state = {"add"}/>}
-            <button className='mr-50 border px-2 py-2 rounded-xl bg-red-600 text-white hover:bg-red-700 cursor-pointer' onClick={() => setShowMemberForm(true)}> - Remove member</button>
-            {showMemberForm&&<AddRemoveMemberForm onClose={() => setShowMemberForm(false)} project={project} state = {"remove"}/>}
+            <button className='mr-1 border px-2 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 cursor-pointer' onClick={() => {setShowMemberForm(true);
+              setState("add")}
+            }> + Add member</button>
+            {showMemberForm&&<AddRemoveMemberForm onClose={() => setShowMemberForm(false)} project={project} state = {state}/>}
+            <button className='mr-50 border px-2 py-2 rounded-xl bg-red-600 text-white hover:bg-red-700 cursor-pointer' onClick={() => {
+              setShowMemberForm(true)
+              setState("remove")
+            }}> - Remove member</button>
+            {showMemberForm&&<AddRemoveMemberForm onClose={() => setShowMemberForm(false)} project={project} state = {state}/>}
             </>}
           </div>
           
           <div className='mt-3 mb-3 border rounded-lg px-5 py-3'>
             <p>{project.description}</p>
           </div>
-      <h1 className="text-2xl font-bold mb-3">Tasks</h1>
+          <div className='flex justify-between'>
+            <h1 className="text-2xl font-bold mb-3">Tasks</h1>
+            {isAdmin&&<button onClick = {() => {setShowCreateTask(true)}} className='border px-2 mb-2 rounded-xl text-white bg-blue-500 hover:bg-blue-600 cursor-pointer'>+ Add New Task</button>}
+          </div>
+          {showCreateTask&&<CreateTaskForm onClose={() => setShowCreateTask(false)}/>}
 
       <div className="grid gap-4 border px-2 py-5 rounded-xl">
         {tasks.filter(task => task.project === id).map(task => (
           <div
             key={task._id}
-            className="p-4 bg-white border rounded-lg hover:shadow transition"
+            className="p-4 bg-white border rounded-lg hover:shadow transition shadow-lg "
           >
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="font-semibold">{task.title}</h3>
+                {isAdmin&&<div className='flex gap-4 mt-1 mb-1'>
+                  <SquarePen className='cursor-pointer 
+                  fill-blue-400 hover:fill-blue-500'
+                  onClick={() => setShowEditTask(true)}/>
+                  {showEditTask&&<EditTaskForm
+                  onClose={() => setShowEditTask(false)} task={task}/>}
+                  
+                  <Trash className='cursor-pointer fill-red-400  hover:fill-red-500' onClick={() => removeTask(task._id)} />
+                </div>}
                 <p className="text-sm text-slate-600">
                   {task.description}
                 </p>
@@ -80,7 +108,11 @@ const priorityColors = {
             </div>
 
             <div className="flex justify-between mt-4 text-sm">
-              {/* <span>Assigned to: {getUserName(task.assignedTo)}</span> */}
+              <span className='hover:border-b cursor-pointer mb-3' onClick={() => {
+                setShowComments(true)
+                setTaskId(task._id)
+                }}>View Comments </span>
+              {showComments&&taskId===task._id&&<CommentModal onClose={() => {setShowComments(false)}} taskId={taskId}/>}
               <span className={`font-medium ${priorityColors[task.priority]}`}>
                 Priority: {task.priority}
               </span>

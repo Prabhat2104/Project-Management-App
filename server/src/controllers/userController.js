@@ -31,7 +31,7 @@ const registerUser = async (req, res) => {
         // Exclude password from response
         const userResponse = {
             _id: newUser._id,
-            // name: newUser.name,
+            name: newUser.name,
             email: newUser.email,
             // role: newUser.role,
             isAdmin: newUser.isAdmin,
@@ -64,7 +64,7 @@ const login = async (req, res) => {
 
         const userResponse = {
             _id: userData._id,
-            // name: userData.name,
+            name: userData.name,
             email: userData.email,
             // role: userData.role,
             isAdmin: userData.isAdmin,
@@ -94,14 +94,16 @@ const updateProfile = async (req, res) => {
             user.password = hashedPassword;
         }
         await user.save();
-        const token = generateToken(user._id);
+        //const token = generateToken(user._id);
         const userResponse = {
             _id: user._id,
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
         };
-        res.status(200).json({ success: true, userData: userResponse, token, message: "Profile updated successfully" })
+        res.status(200).json({ success: true, userData: userResponse, 
+            // token, 
+            message: "Profile updated successfully" })
     }
     catch (error) {
         console.log(error.message);

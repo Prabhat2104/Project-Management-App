@@ -7,6 +7,6 @@ const userRouter = express.Router();
 
 userRouter.post("/register",userValidation, registerUser);
 userRouter.post("/login",userValidation, login);
-userRouter.post("/update",protectRoute,updateProfile);
+userRouter.put("/update",protectRoute,updateProfile);
 
 export default userRouter;

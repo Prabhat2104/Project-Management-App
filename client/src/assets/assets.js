@@ -110,21 +110,40 @@ export const tasks = [
   }
 ];
 
-export const comments = [
+export const dummyComments = [
   {
-    _id: "64f4d4d4d4d4d4d4d4d4d401",
-    content: "Homepage layout looks clean. Add CTA button.",
-    task: "64f3c3c3c3c3c3c3c3c3c301",
-    user: "64f1a1a1a1a1a1a1a1a1a101",
-    createdAt: "2025-01-12T10:15:00Z"
+    _id: "c1",
+    content: "We should finalize the UI before moving to backend integration.",
+    task: "task123",
+    user: "user001",
+    createdAt: "2024-10-01T10:15:00Z",
+    updatedAt: "2024-10-01T10:15:00Z"
   },
   {
-    _id: "64f4d4d4d4d4d4d4d4d4d402",
-    content: "Schemas look good. Removed duplicate timestamps.",
-    task: "64f3c3c3c3c3c3c3c3c3c302",
-    user: "64f1a1a1a1a1a1a1a1a1a101",
-    createdAt: "2025-01-14T09:45:00Z"
+    _id: "c2",
+    content: "API structure looks good. I'll start working on authentication.",
+    task: "task123",
+    user: "user002",
+    createdAt: "2024-10-01T11:30:00Z",
+    updatedAt: "2024-10-01T11:30:00Z"
+  },
+  {
+    _id: "c3",
+    content: "Please make sure to handle edge cases for project deletion.",
+    task: "task123",
+    user: "user003",
+    createdAt: "2024-10-01T13:05:00Z",
+    updatedAt: "2024-10-01T13:05:00Z"
+  },
+  {
+    _id: "c4",
+    content: "I have updated the task priorities based on today's discussion.",
+    task: "task123",
+    user: "user001",
+    createdAt: "2024-10-01T15:45:00Z",
+    updatedAt: "2024-10-01T15:45:00Z"
   }
 ];
+
 
 export default assets;
