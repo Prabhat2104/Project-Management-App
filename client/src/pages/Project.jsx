@@ -29,7 +29,8 @@ const Project = () => {
     useEffect(()=>{
       // if(!authUser.token)
       //   return;
-        if(isAdmin){
+        //if(authLoading) return;
+        if(authUser.isAdmin===true){
           fetchAllProjects();
         }else{
         fetchProjectOfUser();

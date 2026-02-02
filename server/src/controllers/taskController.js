@@ -15,12 +15,17 @@ const createTask = async (req, res) => {
         if (!assignedUser) {
             return res.status(404).json({ success: false, message: "User not found" });
         }
+        if(!assignedUser.projects.includes(project._id)){
+            return res.status(400).json({ success: false, message: "User is not a member of project"})
+        }
+        
         const task = await Task.create({ title, description, status, priority, project: project._id, assignedTo: assignedUser._id });
         project.tasks.push(task._id);
         await project.save();
         assignedUser.tasks.push(task._id);
         await assignedUser.save();
-        await sendMail(assignedUser.email, "Task Created", `Task ${task.title} has been created for you`);
+        //await sendMail(assignedUser.email, "Task Created", `Task ${task.title} has been created for you`);
+        sendMail(assignedUser.email, "Task Created", `Task ${task.title} has been created for you`).catch(console.error);
         res.status(201).json({ success: true, task, message: "Task created successfully" })
     }
     catch (error) {
@@ -48,12 +53,17 @@ const updateTask = async (req, res) => {
             if (!assignedUser) {
                 return res.status(404).json({ success: false, message: "User not found" });
             }
+            if(!assignedUser.projects.includes(task.project)){
+                return res.status(404).json({ success: false, message: "User is not a member of this project" });
+            }
             task.assignedTo = assignedUser._id;
-            await sendMail(assignedUser.email, "Task Updated", `Task ${task.title} has been updated for you`);
+            //await sendMail(assignedUser.email, "Task Updated", `Task ${task.title} has been updated for you`);
+            sendMail(assignedUser.email, "Task Updated", `Task ${task.title} has been updated for you`).catch(console.error);
         }
-        if(task.assignedTo){
+        else if(task.assignedTo){
             const taskAssignedUser = await User.findOne({_id: task.assignedTo});
-            await sendMail(taskAssignedUser.email, "Task Updated", `Task ${task.title} has been updated for you`);
+            //await sendMail(taskAssignedUser.email, "Task Updated", `Task ${task.title} has been updated for you`);
+            sendMail(taskAssignedUser.email, "Task Updated", `Task ${task.title} has been updated for you`).catch(console.error);
         }
         if(comments){
             const comment = await Comment.create({content: comments, task: req.params.id, user: req.user.id});

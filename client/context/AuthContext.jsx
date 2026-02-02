@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { createContext, useEffect, useState } from "react";
 import toast from 'react-hot-toast';
+//import { jwtDecode } from "jwt-decode";
+
 
 // creating Authentication context
 
@@ -15,6 +17,7 @@ axios.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
+   
     return config;
   },
   (error) => Promise.reject(error)
@@ -158,6 +161,8 @@ export const AuthProvider = ({children})=>{
     useEffect(()=>{
         if(token){
             axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+            // setAuthUser(jwtDecode(token));
+            // setIsAdmin(authUser.isAdmin);
         }
 
     },[token])

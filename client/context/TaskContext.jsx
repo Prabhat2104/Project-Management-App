@@ -1,7 +1,6 @@
 import {createContext,useState, useContext, useEffect} from "react";
 //import axios from "axios";
 import toast from "react-hot-toast";
-import { data } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 
 export const TaskContext = createContext(null);

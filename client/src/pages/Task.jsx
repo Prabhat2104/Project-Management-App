@@ -4,8 +4,8 @@ import Navbar from '../components/Navbar'
 import { useParams } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
 import { TaskContext } from '../../context/TaskContext';
-import { AuthContext } from '../../context/AuthContext';
 import { ProjectContext } from '../../context/ProjectContext';
+import { AuthContext } from '../../context/AuthContext';
 import AddRemoveMemberForm from '../components/AddRemoveMemberForm';
 import CreateTaskForm from '../components/CreateTaskForm';
 import { SquarePen } from 'lucide-react';
@@ -29,14 +29,18 @@ const Task = () => {
   // console.log(project);
   const {isAdmin, authUser} = useContext(AuthContext);
   const {tasks, fetchAllTasksOfProject, fetchTaskOfUser, removeTask} = useContext(TaskContext);
+  const {fetchAllProjects, fetchProjectOfUser} = useContext(ProjectContext);
   // const getUserName = (id) =>
   //   users.find(u => u._id === id)?.name || "Unassigned";
   useEffect(()=>{
-    if(isAdmin){
+    if(authUser.isAdmin){
       fetchAllTasksOfProject(id);
+      fetchAllProjects();
     }else{
+      fetchProjectOfUser();
       fetchTaskOfUser(id);
     }
+    console.log(tasks);
   },[])
 
   const statusColors = {
@@ -50,13 +54,14 @@ const priorityColors = {
   medium: "text-yellow-600",
   high: "text-red-600",
 };
+//const projectTasks = tasks.filter(task => task.project === id);
 
   return (
     <div>
         <Navbar/>
         <div className="p-6 max-w-7xl mx-auto">
           <div className='flex justify-between'>
-            <h1 className='text-3xl'>{project.title}</h1>
+            <h1 className='text-3xl'>{project?.title}</h1>
             {isAdmin&&<>
             <button className='mr-1 border px-2 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 cursor-pointer' onClick={() => {setShowMemberForm(true);
               setState("add")}
@@ -71,7 +76,7 @@ const priorityColors = {
           </div>
           
           <div className='mt-3 mb-3 border rounded-lg px-5 py-3'>
-            <p>{project.description}</p>
+            <p>{project?.description}</p>
           </div>
           <div className='flex justify-between'>
             <h1 className="text-2xl font-bold mb-3">Tasks</h1>
@@ -80,7 +85,8 @@ const priorityColors = {
           {showCreateTask&&<CreateTaskForm onClose={() => setShowCreateTask(false)}/>}
 
       <div className="grid gap-4 border px-2 py-5 rounded-xl">
-        {tasks.filter(task => task.project === id).map(task => (
+        {/* {const projectTasks = tasks.filter(task => task.project === id); */}
+        {tasks.map(task => (
           <div
             key={task._id}
             className="p-4 bg-white border rounded-lg hover:shadow transition shadow-lg "
@@ -91,8 +97,10 @@ const priorityColors = {
                 {isAdmin&&<div className='flex gap-4 mt-1 mb-1'>
                   <SquarePen className='cursor-pointer 
                   fill-blue-400 hover:fill-blue-500'
-                  onClick={() => setShowEditTask(true)}/>
-                  {showEditTask&&<EditTaskForm
+                  onClick={() => {setShowEditTask(true)
+                    setTaskId(task._id);
+                  }}/>
+                  {showEditTask&&taskId===task._id&&<EditTaskForm
                   onClose={() => setShowEditTask(false)} task={task}/>}
                   
                   <Trash className='cursor-pointer fill-red-400  hover:fill-red-500' onClick={() => removeTask(task._id)} />
