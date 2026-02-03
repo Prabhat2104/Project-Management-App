@@ -62,7 +62,7 @@ const priorityColors = {
         <div className="p-6 max-w-7xl mx-auto">
           <div className='flex justify-between'>
             <h1 className='text-3xl'>{project?.title}</h1>
-            {isAdmin&&<>
+            {authUser.isAdmin&&<>
             <button className='mr-1 border px-2 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 cursor-pointer' onClick={() => {setShowMemberForm(true);
               setState("add")}
             }> + Add member</button>
@@ -80,7 +80,7 @@ const priorityColors = {
           </div>
           <div className='flex justify-between'>
             <h1 className="text-2xl font-bold mb-3">Tasks</h1>
-            {isAdmin&&<button onClick = {() => {setShowCreateTask(true)}} className='border px-2 mb-2 rounded-xl text-white bg-blue-500 hover:bg-blue-600 cursor-pointer'>+ Add New Task</button>}
+            {authUser.isAdmin&&<button onClick = {() => {setShowCreateTask(true)}} className='border px-2 mb-2 rounded-xl text-white bg-blue-500 hover:bg-blue-600 cursor-pointer'>+ Add New Task</button>}
           </div>
           {showCreateTask&&<CreateTaskForm onClose={() => setShowCreateTask(false)}/>}
 
@@ -94,7 +94,7 @@ const priorityColors = {
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="font-semibold">{task.title}</h3>
-                {isAdmin&&<div className='flex gap-4 mt-1 mb-1'>
+                {authUser.isAdmin&&<div className='flex gap-4 mt-1 mb-1'>
                   <SquarePen className='cursor-pointer 
                   fill-blue-400 hover:fill-blue-500'
                   onClick={() => {setShowEditTask(true)

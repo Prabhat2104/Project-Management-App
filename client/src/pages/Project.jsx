@@ -43,7 +43,7 @@ const Project = () => {
         <div className="p-6 max-w-7xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Projects</h1>
 
-      {isAdmin && (
+      {authUser.isAdmin && (
             <button onClick={() => setShowCreateProjectForm(true)}
               className="px-5 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 cursor-pointer mb-2 transition"
             >

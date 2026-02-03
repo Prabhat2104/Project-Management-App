@@ -5,7 +5,7 @@ import axios from "axios";
 import { X } from "lucide-react";
 import { TaskContext } from '../../context/TaskContext';
 import { AuthContext} from '../../context/AuthContext'
-import { dummyComments } from '../assets/assets';
+//import { dummyComments } from '../assets/assets';
 
 
 const CommentModal = ({onClose, taskId}) => {
