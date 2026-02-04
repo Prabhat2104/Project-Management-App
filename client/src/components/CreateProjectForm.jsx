@@ -2,7 +2,9 @@ import React from 'react'
 import { useState } from 'react'
 import { X } from 'lucide-react';
 import { useContext } from 'react';
-import { ProjectContext } from '../../context/ProjectContext';
+//import { ProjectContext } from '../../context/ProjectContext';
+import { useDispatch } from 'react-redux';
+import { createProject, fetchAllProjects } from '../features/projectSlice';
 
 
 const ProjectForm = ({ onClose }) => {
@@ -11,7 +13,8 @@ const ProjectForm = ({ onClose }) => {
   const [priority, setPriority] = useState("low");
   const [projectId, setProjectId] = useState("");
 
-  const {createProject, fetchAllProjects} = useContext(ProjectContext);
+  //const {createProject, fetchAllProjects} = useContext(ProjectContext);
+  const dispatch = useDispatch();
 
   const handleSubmit = async(e) => {
     e.preventDefault();
@@ -23,10 +26,12 @@ const ProjectForm = ({ onClose }) => {
       projectId: Number(projectId),
     };
 
-    const result = await createProject(projectData);
-    if(result){
-      fetchAllProjects();
-    }
+    // const result = createProject(projectData);
+    // if(result){
+    //   dispatch(fetchAllProjects());
+    // }
+    dispatch(createProject(projectData));
+    //dispatch(fetchAllProjects());
       onClose();
   };
 

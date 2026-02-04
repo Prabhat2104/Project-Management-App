@@ -4,20 +4,24 @@ import Navbar from '../components/Navbar'
 import { useParams } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
 import { TaskContext } from '../../context/TaskContext';
-import { ProjectContext } from '../../context/ProjectContext';
-import { AuthContext } from '../../context/AuthContext';
+//import { ProjectContext } from '../../context/ProjectContext';
+//import { AuthContext } from '../../context/AuthContext';
 import AddRemoveMemberForm from '../components/AddRemoveMemberForm';
 import CreateTaskForm from '../components/CreateTaskForm';
 import { SquarePen } from 'lucide-react';
 import { Trash } from 'lucide-react';
 import EditTaskForm from '../components/EditTaskForm';
 import CommentModal from '../components/CommentModal';
+import { useSelector, useDispatch } from 'react-redux';
+import {fetchAllProjects, fetchProjectOfUser, addMember, removeMember} from '../features/projectSlice'
+import {fetchAllTasksOfProject, fetchTaskOfUser, addNewTask, updateTask, removeTask} from '../features/taskSlice'
 
 
 
 
 const Task = () => {
-  const {projects, addMember} = useContext(ProjectContext);
+  //const {projects, addMember} = useContext(ProjectContext);
+  const {projects} = useSelector((state) => state.project);
   const [showMemberForm, setShowMemberForm] = useState(false);
   const[showCreateTask, setShowCreateTask] = useState(false);
   const [state, setState] = useState("");
@@ -27,20 +31,23 @@ const Task = () => {
   const {id} = useParams();
   const project = projects.find((p)=>p._id===id);
   // console.log(project);
-  const {isAdmin, authUser} = useContext(AuthContext);
-  const {tasks, fetchAllTasksOfProject, fetchTaskOfUser, removeTask} = useContext(TaskContext);
-  const {fetchAllProjects, fetchProjectOfUser} = useContext(ProjectContext);
+  //const {isAdmin, authUser} = useContext(AuthContext);
+  const {isAdmin, authUser} = useSelector((state) => state.auth);
+  //const {tasks, fetchAllTasksOfProject, fetchTaskOfUser, removeTask} = useContext(TaskContext);
+  const {tasks} = useSelector((state) => state.task);
+  //const {fetchAllProjects, fetchProjectOfUser} = useContext(ProjectContext);
+  const dispatch = useDispatch();
   // const getUserName = (id) =>
   //   users.find(u => u._id === id)?.name || "Unassigned";
   useEffect(()=>{
     if(authUser.isAdmin){
-      fetchAllTasksOfProject(id);
-      fetchAllProjects();
+      dispatch(fetchAllTasksOfProject(id));
+      dispatch(fetchAllProjects());
     }else{
-      fetchProjectOfUser();
-      fetchTaskOfUser(id);
+      dispatch(fetchProjectOfUser());
+      dispatch(fetchTaskOfUser(id));
     }
-    console.log(tasks);
+    //console.log(tasks);
   },[])
 
   const statusColors = {
@@ -62,7 +69,7 @@ const priorityColors = {
         <div className="p-6 max-w-7xl mx-auto">
           <div className='flex justify-between'>
             <h1 className='text-3xl'>{project?.title}</h1>
-            {authUser.isAdmin&&<>
+            {isAdmin&&<>
             <button className='mr-1 border px-2 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 cursor-pointer' onClick={() => {setShowMemberForm(true);
               setState("add")}
             }> + Add member</button>
@@ -80,7 +87,7 @@ const priorityColors = {
           </div>
           <div className='flex justify-between'>
             <h1 className="text-2xl font-bold mb-3">Tasks</h1>
-            {authUser.isAdmin&&<button onClick = {() => {setShowCreateTask(true)}} className='border px-2 mb-2 rounded-xl text-white bg-blue-500 hover:bg-blue-600 cursor-pointer'>+ Add New Task</button>}
+            {isAdmin&&<button onClick = {() => {setShowCreateTask(true)}} className='border px-2 mb-2 rounded-xl text-white bg-blue-500 hover:bg-blue-600 cursor-pointer'>+ Add New Task</button>}
           </div>
           {showCreateTask&&<CreateTaskForm onClose={() => setShowCreateTask(false)}/>}
 
@@ -94,7 +101,7 @@ const priorityColors = {
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="font-semibold">{task.title}</h3>
-                {authUser.isAdmin&&<div className='flex gap-4 mt-1 mb-1'>
+                {isAdmin&&<div className='flex gap-4 mt-1 mb-1'>
                   <SquarePen className='cursor-pointer 
                   fill-blue-400 hover:fill-blue-500'
                   onClick={() => {setShowEditTask(true)
@@ -103,7 +110,7 @@ const priorityColors = {
                   {showEditTask&&taskId===task._id&&<EditTaskForm
                   onClose={() => setShowEditTask(false)} task={task}/>}
                   
-                  <Trash className='cursor-pointer fill-red-400  hover:fill-red-500' onClick={() => removeTask(task._id)} />
+                  <Trash className='cursor-pointer fill-red-400  hover:fill-red-500' onClick={() => dispatch(removeTask(task._id))} />
                 </div>}
                 <p className="text-sm text-slate-600">
                   {task.description}

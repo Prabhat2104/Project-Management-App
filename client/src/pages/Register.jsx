@@ -1,6 +1,8 @@
 import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
+//import { AuthContext } from "../../context/AuthContext";
+import { useSelector,useDispatch } from "react-redux";
+import { registerUser } from "../features/authSlice";
 
 
 const Register = () => {
@@ -13,7 +15,9 @@ const Register = () => {
   const navigate = useNavigate();
 
   const { name, email, password } = formData;
-  const {register, authUser, setAuthUser} = useContext(AuthContext);
+  //const {register, authUser, setAuthUser} = useContext(AuthContext);
+  const {authUser} = useSelector((state) => state.auth)
+  const dispatch = useDispatch();
 
   // Handle input change
   const handleChange = (e) => {
@@ -44,12 +48,13 @@ const Register = () => {
     });
 
     try {
-      const success = await register({ name, email, password });
-      if (success) {
-        setIsAdmin(JSON.parse(localStorage.getItem("user")).isAdmin);
-        setAuthUser(JSON.parse(localStorage.getItem("user")));
+      dispatch(registerUser({ name, email, password }));
+      //if (authUser!==null) {
         navigate("/");
-      }
+        //setIsAdmin(JSON.parse(localStorage.getItem("user")).isAdmin);
+        //setAuthUser(JSON.parse(localStorage.getItem("user")));
+        
+      //}
     } catch (error) {
       console.error("Registration failed:", error);
     }

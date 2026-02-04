@@ -2,7 +2,9 @@ import React from 'react'
 import { useState } from 'react'
 import { X } from 'lucide-react';
 import { useContext } from 'react';
-import { ProjectContext } from '../../context/ProjectContext';
+//import { ProjectContext } from '../../context/ProjectContext';
+import { useDispatch } from 'react-redux';
+import { updateProject, fetchAllProjects } from '../features/projectSlice';
 
 
 const ProjectEditForm = ({ onClose, project }) => {
@@ -12,7 +14,8 @@ const ProjectEditForm = ({ onClose, project }) => {
   const [projectId, setProjectId] = useState(project.projectId);
   const [status, setStatus] = useState(project.status);
 
-  const {updateProject,fetchAllProjects} = useContext(ProjectContext);
+  //const {updateProject,fetchAllProjects} = useContext(ProjectContext);
+  const dispatch = useDispatch();
 
   const handleSubmit = async(e) => {
     e.preventDefault();
@@ -25,11 +28,13 @@ const ProjectEditForm = ({ onClose, project }) => {
       status
     };
 
-    const result = await updateProject(projectData);
-    if(result){
-        fetchAllProjects();
-    }
-      onClose();
+    // const result = await updateProject(projectData);
+    // if(result){
+    //     fetchAllProjects();
+    // }
+    dispatch(updateProject(projectData));
+    dispatch(fetchAllProjects());
+    onClose();
   };
 
   return (

@@ -3,21 +3,24 @@ import { useState } from 'react'
 import { X } from 'lucide-react';
 import { useContext } from 'react';
 import { ProjectContext } from '../../context/ProjectContext';
+import { useDispatch } from 'react-redux';
+import {addMember, removeMember} from '../features/projectSlice'
 
 
 const AddRemoveMemberForm = ({ onClose, project, state }) => {
   const [email, setEmail] = useState("");
 
-  const {addMember, removeMember} = useContext(ProjectContext);
+  //const {addMember, removeMember} = useContext(ProjectContext);
   const member = email;
+  const dispatch = useDispatch();
 
   const handleSubmit = async(e) => {
     e.preventDefault();
     if(state==="add"){
-        const result = await addMember(member,project.projectId);
+        dispatch(addMember({member,projectId:project.projectId}));
     }
     else{
-        const result = await removeMember(member,project.projectId);
+        dispatch(removeMember({member,projectId:project.projectId}));
     }
       onClose();
   };

@@ -1,18 +1,25 @@
 import React, { useContext, useLayoutEffect } from 'react'
 import { useEffect, useState, usueContext } from "react";
-import axios from "axios";
+//import axios from "axios";
+import api from '../api/axios';
 // import toast from "react-hot-toast";
 import { X } from "lucide-react";
-import { TaskContext } from '../../context/TaskContext';
-import { AuthContext} from '../../context/AuthContext'
+//import { TaskContext } from '../../context/TaskContext';
+//import { AuthContext} from '../../context/AuthContext'
 //import { dummyComments } from '../assets/assets';
+import { useSelector, useDispatch } from 'react-redux';
+import {getAllComments, createComment} from '../features/taskSlice'
 
 
 const CommentModal = ({onClose, taskId}) => {
     //const comments = dummyComments;
     //const [comments, setComments] = useState([]);
-    const{ comments,getAllComments, setComments, createComment} =  useContext(TaskContext);
-    const {authUser} = useContext(AuthContext);
+    //const{ comments,getAllComments, setComments, createComment} =  useContext(TaskContext);
+    const {comments} = useSelector((state) => state.task)
+    //const {authUser} = useContext(AuthContext);
+    const {authUser} = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
+
     const [content, setContent] = useState("");
 
     useEffect(() => {
@@ -20,12 +27,13 @@ const CommentModal = ({onClose, taskId}) => {
   }, [taskId]);
 
   const fetchComments = async () => {
-    try {
-      const { data } = await axios.get(`/api/comment/getComments/${taskId}`);
-      if (data.success) setComments(data.comments);
-    } catch (error) {
-      toast.error("Failed to load comments");
-    }
+    // try {
+    //   const { data } = await api.get(`/api/comment/getComments/${taskId}`);
+    //   if (data.success) setComments(data.comments);
+    // } catch (error) {
+    //   toast.error("Failed to load comments");
+    // }
+    dispatch(getAllComments(taskId));
   };
 
   const handleSubmit = async (e) => {
@@ -39,7 +47,8 @@ const CommentModal = ({onClose, taskId}) => {
 
     }
     setContent("");
-    createComment(commentDetail);
+    dispatch(createComment(commentDetail));
+    //dispatch(getAllComments(taskId));
 
   };
 

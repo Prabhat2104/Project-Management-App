@@ -1,7 +1,9 @@
 import {useContext, useState} from "react";
-import { ProjectContext } from "../../context/ProjectContext";
+//import { ProjectContext } from "../../context/ProjectContext";
 import ProjectEditForm from "./EditProjectForm";
-import { AuthContext } from "../../context/AuthContext";
+//import { AuthContext } from "../../context/AuthContext";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteProject, fetchAllProjects } from "../features/projectSlice";
 
 const statusColors = {
   assigned: "bg-blue-100 text-blue-700",
@@ -17,12 +19,14 @@ const priorityColors = {
 };
 
 const ProjectCard = ({ project, onClick }) => {
-  const {isAdmin, authUser} = useContext(AuthContext);
-  const{deleteProject, fetchAllProjects} = useContext(ProjectContext);
+  //const {isAdmin} = useContext(AuthContext);
+  const {isAdmin} = useSelector((state)=>state.auth);
+  const dispatch = useDispatch();
+  //const{deleteProject, fetchAllProjects} = useContext(ProjectContext);
   const [showEditForm, setShowEditForm] = useState(false);
   const deleteClick = async () => {
-    await deleteProject(project.projectId);
-    fetchAllProjects();
+    dispatch(deleteProject(project.projectId));
+    //dispatch(fetchAllProjects());
   }
   return (
     <div
@@ -54,7 +58,7 @@ const ProjectCard = ({ project, onClick }) => {
             {project.members?.length || 0}
           </span>
         </div>
-        {authUser.isAdmin&&(<>
+        {isAdmin&&(<>
         <button onClick={() => setShowEditForm(true)} className="bg-blue-500 text-white px-2 py-1 rounded-lg ml-2 h-10 w-16 hover:bg-blue-600 transition-colors cursor-pointer">Edit</button>
         {showEditForm && <ProjectEditForm onClose={() => setShowEditForm(false)} project={project}/>}
         <button className="text-white bg-red-500 px-2 py-1 rounded-lg ml-2 h-10 w-16 hover:bg-red-600 cursor-pointer" onClick={deleteClick}>Delete</button>

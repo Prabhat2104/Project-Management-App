@@ -1,9 +1,12 @@
 import React from 'react'
 import { useState } from 'react'
 import { X } from 'lucide-react';
-import { useContext } from 'react';
-import { TaskContext } from '../../context/TaskContext';
-import {ProjectContext} from '../../context/ProjectContext'
+//import { useContext } from 'react';
+//import { TaskContext } from '../../context/TaskContext';
+//import {ProjectContext} from '../../context/ProjectContext'
+import { useSelector, useDispatch } from 'react-redux';
+import {addNewTask, fetchAllTasksOfProject} from '../features/taskSlice'
+
 
 
 const CreateTaskForm = ({ onClose }) => {
@@ -14,13 +17,17 @@ const CreateTaskForm = ({ onClose }) => {
   const [status, setStatus] = useState("notstarted");
   const[assignedTo, setAssignedTo] = useState("");
 
-  const {addNewTask, fetchAllTasksOfProject} = useContext(TaskContext);
-  const {projects}  = useContext(ProjectContext);
+  //const {addNewTask, fetchAllTasksOfProject} = useContext(TaskContext);
+
+  //const {projects}  = useContext(ProjectContext);
+  const {projects} = useSelector((state) => state.project);
+  const dispatch = useDispatch();
+
 
   const handleSubmit = async(e) => {
     e.preventDefault();
 
-    const projectData = {
+    const taskData = {
       title,
       description,
       priority,
@@ -29,7 +36,8 @@ const CreateTaskForm = ({ onClose }) => {
       projectId: Number(projectId),
     };
 
-    const result = await addNewTask(projectData);
+    //const result = await addNewTask(projectData);
+    dispatch(addNewTask(taskData));
     // if(result){
     //   const project_id = projects.find((p) => p.projectId===projectId)._id
     //   fetchAllTasksOfProject(project_id);
@@ -93,7 +101,7 @@ const CreateTaskForm = ({ onClose }) => {
   <label className="font-medium">Status</label>
   <select
     className="w-full border mt-1 mb-4 border-gray-400/40 outline-none rounded py-2 px-3 bg-white"
-    value={priority}
+    value={status}
     onChange={(e) => setStatus(e.target.value)}
   >
     <option value="notstarted">notstarted</option>

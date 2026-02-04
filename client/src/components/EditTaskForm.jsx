@@ -2,8 +2,10 @@ import React from 'react'
 import { useState } from 'react'
 import { X } from 'lucide-react';
 import { useContext } from 'react';
-import { ProjectContext } from '../../context/ProjectContext';
+//import { ProjectContext } from '../../context/ProjectContext';
 import { TaskContext } from '../../context/TaskContext';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateTask } from '../features/taskSlice';
 
 
 const EditTaskForm = ({ onClose, task }) => {
@@ -14,7 +16,9 @@ const EditTaskForm = ({ onClose, task }) => {
   const [assignedTo, setAssignedTo] = useState("");
   // const[comment, setComment] = useState("");
 
-  const {updateTask} = useContext(TaskContext);
+  const dispatch = useDispatch();
+
+  //const {updateTask} = useContext(TaskContext);
 
   const handleSubmit = async(e) => {
     e.preventDefault();
@@ -29,7 +33,8 @@ const EditTaskForm = ({ onClose, task }) => {
       status
     };
 
-    const result = updateTask(taskData);
+    //const result = updateTask(taskData);
+    dispatch(updateTask(taskData));
     
       onClose();
   };

@@ -1,16 +1,21 @@
 import React, { useEffect, useContext, useState } from 'react'
 import Navbar from '../components/Navbar'
-import {projects} from '../assets/assets'
+//import {projects} from '../assets/assets'
 import ProjectCard from '../components/ProjectCard'
 import {useNavigate} from 'react-router-dom'
-import {AuthContext} from '../../context/AuthContext'
-import { ProjectContext } from '../../context/ProjectContext'
+//import {AuthContext} from '../../context/AuthContext'
+import { useSelector, useDispatch } from 'react-redux'
+import { fetchAllProjects, fetchProjectOfUser, createProject, updateProject, deleteProject } from '../features/projectSlice'
+//import { ProjectContext } from '../../context/ProjectContext'
 import toast from 'react-hot-toast'
 import ProjectForm from '../components/CreateProjectForm'
 
 const Project = () => {
     const navigate = useNavigate();
-    const {isAdmin, authUser} = useContext(AuthContext);
+    //const {isAdmin, authUser} = useContext(AuthContext);
+    const {isAdmin, authUser} = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
+
     const [showCreateProjectForm, setShowCreateProjectForm] = useState(false);
     //This below section is for test purpose only
     // let projectToShow = [];
@@ -25,15 +30,16 @@ const Project = () => {
     // },[])
 
 
-    const {projects, fetchAllProjects, fetchProjectOfUser, createProject} = useContext(ProjectContext);
+    //const {projects, fetchAllProjects, fetchProjectOfUser, createProject} = useContext(ProjectContext);
+    const {projects, loading, error} = useSelector((state) => state.project);
     useEffect(()=>{
       // if(!authUser.token)
       //   return;
         //if(authLoading) return;
         if(authUser.isAdmin===true){
-          fetchAllProjects();
+          dispatch(fetchAllProjects());
         }else{
-        fetchProjectOfUser();
+        dispatch(fetchProjectOfUser());
         }
     },[])
     
@@ -43,7 +49,7 @@ const Project = () => {
         <div className="p-6 max-w-7xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Projects</h1>
 
-      {authUser.isAdmin && (
+      {isAdmin && (
             <button onClick={() => setShowCreateProjectForm(true)}
               className="px-5 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 cursor-pointer mb-2 transition"
             >

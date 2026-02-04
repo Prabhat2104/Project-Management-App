@@ -1,6 +1,8 @@
 import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
+//import { AuthContext } from "../../context/AuthContext";
+import { useSelector,useDispatch } from "react-redux";
+import { loginUser } from "../features/authSlice";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -9,7 +11,8 @@ const Login = () => {
   });
 
   const { email, password } = formData;
-  const {login, authUser,setIsAdmin, setAuthUser} = useContext(AuthContext);
+  //const {login, authUser,setIsAdmin, setAuthUser} = useContext(AuthContext);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   // Handle input change
@@ -33,13 +36,14 @@ const Login = () => {
     }
 
     try {
-        const success = await login({ email, password });
+        //const success = await login({ email, password });
+        const success = dispatch(loginUser({ email, password }));
         if (success) {
           
           navigate("/");
           // console.log(JSON.parse(localStorage.getItem("user")).isAdmin);
-          setIsAdmin(JSON.parse(localStorage.getItem("user")).isAdmin);
-          setAuthUser(JSON.parse(localStorage.getItem("user")));
+          //setIsAdmin(JSON.parse(localStorage.getItem("user")).isAdmin);
+          //setAuthUser(JSON.parse(localStorage.getItem("user")));
         }
       } catch (error) {
         console.error("Login failed:", error);

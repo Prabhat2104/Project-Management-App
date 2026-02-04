@@ -2,11 +2,15 @@ import React from 'react'
 import { useState } from 'react'
 import { X } from 'lucide-react';
 import { useContext } from 'react';
-import { AuthContext } from '../../context/AuthContext';
+//import { AuthContext } from '../../context/AuthContext';
+import {updateProfile} from '../features/authSlice'
+import { useSelector, useDispatch } from 'react-redux';
 
 
 const UpdateProfile = ({ onClose }) => {
-  const {authUser, updateProfile} = useContext(AuthContext);
+  //const {authUser, updateProfile} = useContext(AuthContext);
+  const {authUser} = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const [name, setName] = useState(authUser.name);
   const [email, setEmail] = useState(authUser.email);
   const [password, setPassword] = useState("");
@@ -21,10 +25,10 @@ const UpdateProfile = ({ onClose }) => {
     
     if(password.length>0){
       const profileDataWithPassword = [...profileData,password];
-      const result = await updateProfile(profileDataWithPassword);
+      dispatch(updateProfile(profileDataWithPassword));
     }
     else{
-      const result = await updateProfile(profileData);
+      dispatch(updateProfile(profileData));
     }
     // if(result){
     //     fetchAllProjects();
