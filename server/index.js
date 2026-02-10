@@ -4,8 +4,11 @@ import connectdb from "./src/config/connectDB.js";
 import userRouter from "./src/routes/authRoutes.js";
 import projectRouter from "./src/routes/projectRoutes.js";
 import taskRouter from "./src/routes/taskRoutes.js";
+import activityRouter from "./src/routes/activityLogRoutes.js";
 import cors from "cors";
 import commentRouter from "./src/routes/commentRoutes.js";
+import http from 'http';
+import { initSocket } from "./src/socket/socket.js";
 
 const app = express();
 app.use(express.json());
@@ -23,16 +26,20 @@ await connectdb();
 const PORT = process.env.PORT || 3000;
 
 app.get('/api/status', (req, res) => {
-    res.send('Server is live');
+  res.send('Server is live');
 });
 
 app.use('/api/auth', userRouter);
 app.use('/api/project', projectRouter);
 app.use('/api/task', taskRouter);
 app.use('/api/comment', commentRouter);
+app.use('/api/activity', activityRouter);
+
+const server = http.createServer(app);
+
+initSocket(server);
 
 
-
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

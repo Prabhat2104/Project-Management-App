@@ -15,6 +15,7 @@ import CommentModal from '../components/CommentModal';
 import { useSelector, useDispatch } from 'react-redux';
 import {fetchAllProjects, fetchProjectOfUser, addMember, removeMember} from '../features/projectSlice'
 import {fetchAllTasksOfProject, fetchTaskOfUser, addNewTask, updateTask, removeTask} from '../features/taskSlice'
+import socket from '../socket/socket';
 
 
 
@@ -39,13 +40,31 @@ const Task = () => {
   const dispatch = useDispatch();
   // const getUserName = (id) =>
   //   users.find(u => u._id === id)?.name || "Unassigned";
+
+  
+
+
+  useEffect(() => {
+        if(!projects.length) return;
+        projects.forEach((project)=>{
+          socket.emit("join:project",`project:${project.projectId}`);
+        });
+        return () => {
+          projects.forEach((project) => {
+            socket.emit("leave:project",`project:${project.projectId}`);
+          })
+        }
+      },[projects])
+
+
   useEffect(()=>{
     if(authUser.isAdmin){
       dispatch(fetchAllTasksOfProject(id));
       dispatch(fetchAllProjects());
     }else{
       dispatch(fetchProjectOfUser());
-      dispatch(fetchTaskOfUser(id));
+      //dispatch(fetchTaskOfUser(id));
+      dispatch(fetchTaskOfUser({projectId:id, userId:authUser._id}));
     }
     //console.log(tasks);
   },[])

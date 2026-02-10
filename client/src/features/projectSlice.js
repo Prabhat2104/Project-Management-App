@@ -1,6 +1,55 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import toast from 'react-hot-toast';
 import api from '../api/axios';
+import socket from '../socket/socket';
+
+
+
+export const setupProjectSocketListeners = (store) => {
+
+  const {dispatch, getState} = store;
+  socket.on("project:created", (project) => {
+    dispatch({
+      type: "project/socketCreate",
+      payload: project,
+    });
+  });
+
+  // socket.on("project:updated", (project) => {
+  //   dispatch({
+  //     type: "project/socketUpdate",
+  //     payload: project,
+  //   });
+  // });
+  socket.on("project:memberAdded", (project) => {
+    dispatch({
+      type: "project/socketMemberAdded",
+      payload: project,
+    });
+  });
+
+  socket.on("project:memberRemoved", ({ projectId }) => {
+    dispatch({
+      type: "project/socketMemberRemoved",
+      payload: projectId,
+    });
+  });
+
+  socket.on("project:updated", (project) => {
+    dispatch({
+      type: "project/socketUpdate",
+      payload: project,
+    });
+  });
+
+  socket.on("project:deleted", (projectId) => {
+    dispatch({
+      type: "project/socketDelete",
+      payload: projectId,
+    });
+  });
+};
+
 
 //Fetch All Projects
 export const fetchAllProjects = createAsyncThunk(
@@ -111,7 +160,42 @@ const projectSlice = createSlice({
     error: null,
   },
 
-  reducers: {},
+  reducers: {
+    socketCreate: (state, action) => {
+      const exists = state.projects.find(
+        (p) => p._id === action.payload._id
+      );
+      if (!exists) state.projects.push(action.payload);
+    },
+
+    socketUpdate: (state, action) => {
+      state.projects = state.projects.map((p) =>
+        p._id === action.payload._id ? action.payload : p
+      );
+    },
+
+    socketDelete: (state, action) => {
+      state.projects = state.projects.filter(
+        (p) => p.projectId !== action.payload
+      );
+    },
+    socketMemberAdded: (state, action) => {
+      const exists = state.projects.find(
+        (p) => p._id === action.payload._id
+      );
+
+      // If user is newly added, push project
+      if (!exists) {
+        state.projects.push(action.payload);
+      }
+    },
+
+    socketMemberRemoved: (state, action) => {
+      state.projects = state.projects.filter(
+        (p) => p.projectId !== action.payload
+      );
+    },
+  },
 
   extraReducers: (builder) => {
     builder
@@ -217,5 +301,13 @@ const projectSlice = createSlice({
       // );
   },
 });
+
+export const {
+  projectCreated,
+  projectUpdated,
+  projectDeleted,
+  memberAddedRealtime,
+  memberRemovedRealtime,
+} = projectSlice.actions;
 
 export default projectSlice.reducer;

@@ -9,6 +9,7 @@ import { fetchAllProjects, fetchProjectOfUser, createProject, updateProject, del
 //import { ProjectContext } from '../../context/ProjectContext'
 import toast from 'react-hot-toast'
 import ProjectForm from '../components/CreateProjectForm'
+import socket from '../socket/socket'
 
 const Project = () => {
     const navigate = useNavigate();
@@ -29,9 +30,23 @@ const Project = () => {
     //     console.log(JSON.parse(localStorage.getItem("user")));
     // },[])
 
+    const {projects, loading, error} = useSelector((state) => state.project);
+
+    useEffect(() => {
+      if(!projects.length) return;
+      projects.forEach((project)=>{
+        socket.emit("join:project",`project:${project.projectId}`);
+      });
+      return () => {
+        projects.forEach((project) => {
+          socket.emit("leave:project",`project:${project.projectId}`);
+        })
+      }
+    },[projects])
+
 
     //const {projects, fetchAllProjects, fetchProjectOfUser, createProject} = useContext(ProjectContext);
-    const {projects, loading, error} = useSelector((state) => state.project);
+    
     useEffect(()=>{
       // if(!authUser.token)
       //   return;

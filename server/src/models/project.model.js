@@ -19,14 +19,14 @@ const projectSchema = new mongoose.Schema({
         enum: ["low", "medium", "high"],
         default: "low"
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
-    },
+    // createdAt: {
+    //     type: Date,
+    //     default: Date.now
+    // },
+    // updatedAt: {
+    //     type: Date,
+    //     default: Date.now
+    // },
     tasks: [
         {
             type: mongoose.Schema.Types.ObjectId,

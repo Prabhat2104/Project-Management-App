@@ -5,7 +5,7 @@ import App from './App.jsx'
 // import { AuthProvider } from '../context/AuthContext.jsx'
 // import { ProjectProvider } from '../context/ProjectContext.jsx'
 import { TaskProvider } from '../context/TaskContext.jsx'
-import {store} from './app/store.js'
+import store from './app/store.js'
 import {Provider} from 'react-redux'
 
 createRoot(document.getElementById('root')).render(

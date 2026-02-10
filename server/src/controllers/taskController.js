@@ -3,6 +3,8 @@ import User from "../models/user.model.js";
 import Project from "../models/project.model.js";
 import Comment from "../models/comment.model.js";
 import sendMail from "../services/mailService.js";
+import { getIO } from "../socket/socket.js";
+import ActivityLog from "../models/activityLog.model.js";
 
 const createTask = async (req, res) => {
     try {
@@ -26,6 +28,19 @@ const createTask = async (req, res) => {
         await assignedUser.save();
         //await sendMail(assignedUser.email, "Task Created", `Task ${task.title} has been created for you`);
         sendMail(assignedUser.email, "Task Created", `Task ${task.title} has been created for you`).catch(console.error);
+
+
+        const io = getIO();
+        io.to(`project:${projectId}`).emit("task:created", task);
+        // io.to(`user:${project.admin}`).emit("task:created", task);
+        // if (String(project.admin) !== String(task.assignedTo)) {
+        //     io.to(`user:${task.assignedTo}`).emit("task:created", task);
+        // }
+
+        const activity = await ActivityLog.create({actor: req.user._id,actorName: req.user.name, action: "Created", project: project._id, entityType: "Task", entityId: task._id, entityName: task.title});
+
+        io.to(`project:${project.projectId}`).emit("activity:taskCreated", activity);
+
         res.status(201).json({ success: true, task, message: "Task created successfully" })
     }
     catch (error) {
@@ -77,6 +92,20 @@ const updateTask = async (req, res) => {
         task.priority = priority || task.priority;
         
         await task.save();
+
+        const project = await Project.findById(task.project);
+
+        const io = getIO();
+        io.to(`project:${project.projectId}`).emit("task:updated", task);
+        // io.to(`user:${project.admin}`).emit("task:updated", task);
+        // if (String(project.admin) !== String(task.assignedTo)) {
+        //     io.to(`user:${task.assignedTo}`).emit("task:updated", task);
+        // }
+
+        const activity = await ActivityLog.create({actor: req.user._id, actorName: req.user.name, action: "Updated", project: project._id, entityType: "Task", entityId: task._id, entityName: task.title});
+
+        io.to(`project:${project.projectId}`).emit("activity:taskUpdated", activity);
+
         res.status(200).json({ success: true, task, message: "Task updated successfully" })
     }
     catch (error) {
@@ -117,7 +146,7 @@ const getTasksForUser = async (req, res) => {
     try {
         const tasks = await Task.find({ assignedTo: req.params.id });
         if(!tasks){
-            return res.status(404).json({success: "false", message: "Tasks not found"})
+            return res.status(404).json({success: false, message: "Tasks not found"})
         }
         res.status(200).json({success: true, tasks});
     }
@@ -126,6 +155,25 @@ const getTasksForUser = async (req, res) => {
         res.status(500).json({ success: false, message: "Internal Server Error while getting tasks for an user" })
     }
 }
+
+
+const getTasksForUserOfProject = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const tasks = await Task.find({ project: req.params.id, assignedTo: userId });
+        
+        if(!tasks){
+            return res.status(404).json({success: false, message: "Tasks not found"})
+        }
+        res.status(200).json({success: true, tasks});
+    }
+    catch (error) {
+        console.log(error.message);
+        res.status(500).json({ success: false, message: "Internal Server Error while getting tasks for an user" })
+    }
+}
+
+
 
 const deleteTask = async (req, res) => {
     try {
@@ -145,6 +193,19 @@ const deleteTask = async (req, res) => {
         }
         assignedUser.tasks.pull(task._id);
         await assignedUser.save();
+
+
+        const io = getIO();
+        io.to(`project:${project.projectId}`).emit("task:deleted", task);
+        // io.to(`user:${project.admin}`).emit("task:deleted", task);
+        // if (String(project.admin) !== String(task.assignedTo)) {
+        //     io.to(`user:${task.assignedTo}`).emit("task:deleted", task);
+        // }
+
+        const activity = await ActivityLog.create({actor: req.user._id,actorName: req.user.name, action: "Deleted", project: project._id, entityType: "Task", entityId: task._id, entityName: task.title})
+
+        io.to(`project:${project.projectId}`).emit("activity:taskDeleted", activity);
+
         res.status(200).json({ success: true, message: "Task deleted successfully" })
     }
     catch (error) {
@@ -154,4 +215,4 @@ const deleteTask = async (req, res) => {
 }
 
 
-export {createTask, updateTask, getAllTaskForProject, getstatusqueriedtasks, deleteTask, getTasksForUser};
+export {createTask, updateTask, getAllTaskForProject, getstatusqueriedtasks, deleteTask, getTasksForUser, getTasksForUserOfProject};

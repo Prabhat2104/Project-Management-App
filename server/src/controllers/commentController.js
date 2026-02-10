@@ -3,6 +3,9 @@ import User from "../models/user.model.js";
 import Task from "../models/task.model.js";
 import mongoose from "mongoose";
 
+import { getIO } from "../socket/socket.js";
+import Project from "../models/project.model.js";
+
 const createComment = async (req, res) => {
     try {
         const { content, task_id, user } = req.body;
@@ -13,6 +16,12 @@ const createComment = async (req, res) => {
         }
         task.comments.push(comment._id);
         await task.save();
+
+        const io = getIO();
+        const project = await Project.findById(task.project);
+        io.to(`project:${project.projectId}`).emit("comment:added", comment);
+
+
         res.status(201).json({ success: true, comment, message: "Comment created successfully" })
     }
     catch (error) {

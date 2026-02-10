@@ -145,5 +145,58 @@ export const dummyComments = [
   }
 ];
 
+export const dummyActivities = [
+  {
+    "_id": "65b8a101a1c1a1a1a1a1a101",
+    "actor": "65b89f001a2b3c4d5e6f7001",
+    "action": "Created",
+    "project": "65b899991a2b3c4d5e6f9001",
+    "entityType": "Task",
+    "entityId": "65b8a222a1c1a1a1a1a1a222",
+    "createdAt": "2026-02-05T10:15:30.000Z",
+    "updatedAt": "2026-02-05T10:15:30.000Z"
+  },
+  {
+    "_id": "65b8a102a1c1a1a1a1a1a102",
+    "actor": "65b89f001a2b3c4d5e6f7002",
+    "action": "Updated",
+    "project": "65b899991a2b3c4d5e6f9001",
+    "entityType": "Task",
+    "entityId": "65b8a222a1c1a1a1a1a1a222",
+    "createdAt": "2026-02-05T11:00:00.000Z",
+    "updatedAt": "2026-02-05T11:00:00.000Z"
+  },
+  {
+    "_id": "65b8a103a1c1a1a1a1a1a103",
+    "actor": "65b89f001a2b3c4d5e6f7001",
+    "action": "Deleted",
+    "project": "65b899991a2b3c4d5e6f9001",
+    "entityType": "Task",
+    "entityId": "65b8a333a1c1a1a1a1a1a333",
+    "createdAt": "2026-02-05T12:45:10.000Z",
+    "updatedAt": "2026-02-05T12:45:10.000Z"
+  },
+  {
+    "_id": "65b8a104a1c1a1a1a1a1a104",
+    "actor": "65b89f001a2b3c4d5e6f7003",
+    "action": "Created",
+    "project": "65b899991a2b3c4d5e6f9001",
+    "entityType": "Project",
+    "entityId": "65b899991a2b3c4d5e6f9001",
+    "createdAt": "2026-02-04T09:30:00.000Z",
+    "updatedAt": "2026-02-04T09:30:00.000Z"
+  },
+  {
+    "_id": "65b8a105a1c1a1a1a1a1a105",
+    "actor": "65b89f001a2b3c4d5e6f7002",
+    "action": "Updated",
+    "project": "65b899991a2b3c4d5e6f9001",
+    "entityType": "Project",
+    "entityId": "65b899991a2b3c4d5e6f9001",
+    "createdAt": "2026-02-06T08:20:45.000Z",
+    "updatedAt": "2026-02-06T08:20:45.000Z"
+  }
+]
+
 
 export default assets;

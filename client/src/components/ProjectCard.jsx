@@ -4,6 +4,9 @@ import ProjectEditForm from "./EditProjectForm";
 //import { AuthContext } from "../../context/AuthContext";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteProject, fetchAllProjects } from "../features/projectSlice";
+import { Clock } from 'lucide-react';
+import ActivityLogModal from "./ActivityLogsModal";
+
 
 const statusColors = {
   assigned: "bg-blue-100 text-blue-700",
@@ -24,6 +27,9 @@ const ProjectCard = ({ project, onClick }) => {
   const dispatch = useDispatch();
   //const{deleteProject, fetchAllProjects} = useContext(ProjectContext);
   const [showEditForm, setShowEditForm] = useState(false);
+  
+  const [showActivityModal, setShowActivityModal] = useState(false);
+
   const deleteClick = async () => {
     dispatch(deleteProject(project.projectId));
     //dispatch(fetchAllProjects());
@@ -35,9 +41,13 @@ const ProjectCard = ({ project, onClick }) => {
     >
       {/* Header */}
       <div className="flex justify-between items-start">
-        <h3 className="text-lg font-semibold text-slate-800 cursor-pointer hover:text-blue-600 hover:border-b-1 hover:border-blue-600 transition-all" onClick={onClick}>
+        <div className="flex justify-between">
+          <h3 className="text-lg font-semibold text-slate-800 cursor-pointer hover:text-blue-600 hover:border-b-1 hover:border-blue-600 transition-all" onClick={onClick}>
           {project.title}
         </h3>
+        <Clock className="ml-2" onClick={() => setShowActivityModal(true)}/>
+        {showActivityModal&&<ActivityLogModal onClose={() => setShowActivityModal(false)} projectId = {project._id}/>}
+        </div>
         <span
           className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[project.status]}`}
         >
